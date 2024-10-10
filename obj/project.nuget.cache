@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "+4vD16HebTo=",
   "success": true,
   "projectFilePath": "C:\\Users\\HP\\source\\repos\\TicTacToe_Sartaj_Singh\\TicTacToe_Sartaj_Singh.csproj",
+=======
+  "dgSpecHash": "vw3nUqJ/7/U=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\HP\\source\\repos\\TicTacToe_Sartaj\\TicTacToe_Sartaj.csproj",
+>>>>>>> 3265b7c (final commit)
   "expectedPackageFiles": [],
   "logs": []
 }

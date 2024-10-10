@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿<Window x:Class="TicTacToe_Sartaj_Singh.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -72,6 +73,97 @@
         <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20">
             <Button x:Name="ResetButton" Content="Reset" Width="100" Height="30" Margin="0,0,0,10" ToolTip="Reset the game" Click="ResetButton_Click"/>
             <Button x:Name="ExitButton" Content="Exit" Width="100" Height="30" ToolTip="Exit the application" Click="ExitButton_Click"/>
+=======
+﻿<Window x:Class="TicTacToe_Sartaj.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Tic Tac Toe" Height="500" Width="600"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="45*"/>
+            <!-- Left Column for Game Grid and Player Info -->
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="8*"/>
+            <!-- Right Column for Score and Controls -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Player Information Section (Left Column) -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0">
+            <TextBlock Text="Tic Tac Toe" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10"/>
+
+            <!-- X Player Info -->
+            <StackPanel Orientation="Horizontal" Margin="0,10">
+                <TextBlock Text="X Player:" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBox x:Name="XPlayerName" Width="150" Height="30" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <!-- O Player Info -->
+            <StackPanel Orientation="Horizontal" Margin="0,10">
+                <TextBlock Text="O Player:" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBox x:Name="OPlayerName" Width="150" Height="30" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <Button Content="Choose Starting Player" Click="ChooseStartingPlayer_Click" Width="150" Height="30" Margin="0,10"/>
+
+            <!-- Current Player Info -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                <TextBlock Text="Current Player:" FontSize="16" FontWeight="Bold"/>
+                <TextBlock x:Name="CurrentPlayer" Text="X" FontSize="16" Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Tic Tac Toe Grid (Left Column) -->
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Tic Tac Toe Buttons -->
+            <Button x:Name="Button0" Grid.Row="0" Grid.Column="0" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button1" Grid.Row="0" Grid.Column="1" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button2" Grid.Row="0" Grid.Column="2" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button3" Grid.Row="1" Grid.Column="0" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button4" Grid.Row="1" Grid.Column="1" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button5" Grid.Row="1" Grid.Column="2" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button6" Grid.Row="2" Grid.Column="0" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button7" Grid.Row="2" Grid.Column="1" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+            <Button x:Name="Button8" Grid.Row="2" Grid.Column="2" Click="Button_Click" FontSize="26" Width="100" Height="100" Margin="5"/>
+        </Grid>
+
+        <!-- Score and Controls (Right Column) -->
+        <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="61,176,0,0" Grid.ColumnSpan="2">
+            <TextBlock Text="Score" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10"/>
+
+            <!-- Score Display -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,20">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="X: " FontSize="16" />
+                    <TextBlock x:Name="XScore" Text="0" FontSize="16" Margin="5"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="O: " FontSize="16" />
+                    <TextBlock x:Name="OScore" Text="0" FontSize="16" Margin="5"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBlock Text="Cats: " FontSize="16" />
+                    <TextBlock x:Name="CatsScore" Text="0" FontSize="16" Margin="5"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Control Buttons -->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10">
+                <Button Content="Reset" Click="ResetButton_Click" Width="100" Height="30" Margin="5"/>
+                <Button Content="Exit" Click="ExitButton_Click" Width="100" Height="30" Margin="5"/>
+            </StackPanel>
+>>>>>>> 3265b7c (final commit)
         </StackPanel>
     </Grid>
 </Window>

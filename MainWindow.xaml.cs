@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿// Name - Sartaj Singh
 // Date - 2024 - 10 - 08
 // Modified - 2024 - 10 - 08
@@ -220,5 +221,118 @@ namespace TicTacToe_Sartaj_Singh
             // Update the display to show the current player
             UpdateCurrentPlayerLabel();
         }
+=======
+﻿using System.Windows;
+using System.Windows.Controls;
+using static System.Formats.Asn1.AsnWriter;
+
+namespace TicTacToe_Sartaj
+{
+    public partial class MainWindow : Window
+    {
+        private bool isPlayerOneTurn = true;
+        private int turnCount = 0;
+        private int xScore = 0, oScore = 0, catsGameScore = 0;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button.Content.ToString() == " ")
+            {
+                button.Content = isPlayerOneTurn ? "X" : "O";
+                CurrentPlayer.Text = isPlayerOneTurn ? "O" : "X"; // Update current player label
+                isPlayerOneTurn = !isPlayerOneTurn;
+                turnCount++;
+
+                if (turnCount >= 5) // Only start checking for a winner after 5 moves
+                {
+                    if (CheckForWinner())
+                    {
+                        if (!isPlayerOneTurn) xScore++;
+                        else oScore++;
+
+                        MessageBox.Show($"{(isPlayerOneTurn ? OPlayerName.Text : XPlayerName.Text)} wins!");
+                        UpdateScores();
+                        ResetBoard();
+                    }
+                    else if (turnCount == 9)
+                    {
+                        catsGameScore++;
+                        MessageBox.Show("It's a draw!");
+                        UpdateScores();
+                        ResetBoard();
+                    }
+                }
+            }
+        }
+
+        private bool CheckForWinner()
+        {
+            var buttons = new Button[3, 3]
+            {
+                { Button0, Button1, Button2 },
+                { Button3, Button4, Button5 },
+                { Button6, Button7, Button8 }
+            };
+
+            for (int i = 0; i < 3; i++)
+            {
+                // Check rows
+                if (buttons[i, 0].Content == buttons[i, 1].Content && buttons[i, 1].Content == buttons[i, 2].Content && buttons[i, 0].Content.ToString() != " ")
+                    return true;
+                // Check columns
+                if (buttons[0, i].Content == buttons[1, i].Content && buttons[1, i].Content == buttons[2, i].Content && buttons[0, i].Content.ToString() != " ")
+                    return true;
+            }
+            // Check diagonals
+            if (buttons[0, 0].Content == buttons[1, 1].Content && buttons[1, 1].Content == buttons[2, 2].Content && buttons[0, 0].Content.ToString() != " ")
+                return true;
+            if (buttons[0, 2].Content == buttons[1, 1].Content && buttons[1, 1].Content == buttons[2, 0].Content && buttons[0, 2].Content.ToString() != " ")
+                return true;
+
+            return false;
+        }
+
+        private void UpdateScores()
+        {
+            XScore.Text = xScore.ToString();
+            OScore.Text = oScore.ToString();
+            CatsScore.Text = catsGameScore.ToString();
+        }
+
+        private void ResetBoard()
+        {
+            Button0.Content = Button1.Content = Button2.Content =
+            Button3.Content = Button4.Content = Button5.Content =
+            Button6.Content = Button7.Content = Button8.Content = " ";
+            isPlayerOneTurn = true;
+            turnCount = 0;
+            CurrentPlayer.Text = "X"; // Reset current player to X
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetBoard();
+            xScore = oScore = catsGameScore = 0; // Reset scores
+            UpdateScores();
+            XPlayerName.Text = OPlayerName.Text = ""; // Clear player names
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void ChooseStartingPlayer_Click(object sender, RoutedEventArgs e)
+        {
+            isPlayerOneTurn = (MessageBox.Show("Should Player X start?", "Choose Starting Player", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
+            CurrentPlayer.Text = isPlayerOneTurn ? "X" : "O"; // Set the current player display
+        }
+>>>>>>> 3265b7c (final commit)
     }
 }
