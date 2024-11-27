@@ -1,0 +1,97 @@
+[
+  {
+    "Timestamp": "2024-11-26T20:16:59.6696398-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:00.6124614-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:01.0033995-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:01.3951669-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:02.67147-05:00",
+    "Operation": "Reset",
+    "Details": "Deck reset to original state"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:08.4308551-05:00",
+    "Operation": "AddCustomCard",
+    "Details": "Added Custom Card: 4 of 4"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:14.2497477-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:14.700057-05:00",
+    "Operation": "Shuffle",
+    "Details": "Deck shuffled"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:19.2791864-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: King of Hearts, Queen of Clubs, 8 of Clubs, Ace of Spades, 5 of Spades"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:20.3980737-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 9 of Hearts, 5 of Hearts, 2 of Diamonds, 3 of Clubs, Jack of Hearts"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:21.2811656-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 8 of Spades, Queen of Hearts, 6 of Spades, 4 of Diamonds, 3 of Spades"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:22.0277591-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: Ace of Clubs, 6 of Hearts, 2 of Clubs, 8 of Hearts, 7 of Diamonds"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:22.4827906-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 7 of Hearts, 10 of Spades, 4 of 4, 4 of Spades, 3 of Hearts"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:25.1487116-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: Queen of Diamonds, 10 of Diamonds, Jack of Diamonds, King of Diamonds, 9 of Clubs"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:25.4930861-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 3 of Diamonds, 7 of Clubs, 5 of Clubs, 10 of Hearts, 6 of Diamonds"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:28.3483055-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: Jack of Clubs, 7 of Spades, 9 of Spades, Jack of Spades, 4 of Clubs"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:28.4919329-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 4 of Hearts, 9 of Diamonds, King of Spades, 6 of Clubs, Ace of Hearts"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:31.4864401-05:00",
+    "Operation": "Deal",
+    "Details": "Dealt 5 cards: 10 of Clubs, 8 of Diamonds, King of Clubs, Queen of Spades, 2 of Hearts"
+  },
+  {
+    "Timestamp": "2024-11-26T20:17:41.7902612-05:00",
+    "Operation": "Reset",
+    "Details": "Deck reset to original state"
+  }
+]
