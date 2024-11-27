@@ -5,12 +5,11 @@ public class StandardDeck : Deck
 
     public StandardDeck()
     {
-        // Use for loops instead of foreach
-        for (int i = 0; i < suits.Length; i++)
+        foreach (var suit in suits)
         {
-            for (int j = 0; j < ranks.Length; j++)
+            foreach (var rank in ranks)
             {
-                AddCard(new Card(suits[i], ranks[j]));
+                AddCard(new Card(suit, rank));
             }
         }
     }

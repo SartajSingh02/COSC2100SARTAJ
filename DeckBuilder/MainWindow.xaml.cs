@@ -1,61 +1,70 @@
-﻿// Name: Sartaj Singh
-// Date: 11/10/2024
-// Modified: 11/11/2024
-// Description: Code creates a card deck app where users can add custom cards, shuffle, deal and view the deck.
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace DeckBuilder
 {
     public partial class MainWindow : Window
     {
-        // The standard deck of cards
         private StandardDeck standardDeck;
-        // The custom deck where user-added cards are stored
-        private CustomDeck customDeck;
 
         public MainWindow()
         {
             InitializeComponent();
-            // Creates a new standard deck
-            standardDeck = new StandardDeck();
-            // Creates a new empty custom deck
-            customDeck = new CustomDeck();
-        }
-
-        // Adds a custom card with user-provided suit and rank
-        private void AddCustomButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Get suit from SuitTextBox
-            string suit = SuitTextBox.Text;
-            // Get rank from RankTextBox
-            string rank = RankTextBox.Text;
             try
             {
-                // Adds the custom card to the custom deck
-                customDeck.AddCustomCard(suit, rank);
-                MessageBox.Show($"Added Custom Card: {rank} of {suit}");
+                LoadDeckFromJson();
             }
             catch (Exception ex)
             {
-                // Prompt for Error Message
+                MessageBox.Show("Could not load deck from file. Starting with a new deck.\n" + ex.Message);
+                standardDeck = new StandardDeck();
+            }
+        }
+
+        private void AddCustomButton_Click(object sender, RoutedEventArgs e)
+        {
+            string suit = SuitTextBox.Text;
+            string rank = RankTextBox.Text;
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(suit) && !string.IsNullOrWhiteSpace(rank))
+                {
+                    standardDeck.AddCard(new Card(suit, rank));
+                    MessageBox.Show($"Added Custom Card: {rank} of {suit}");
+                    LogOperation("AddCustomCard", $"Added Custom Card: {rank} of {suit}");
+                    DisplayDeck();
+                }
+                else
+                {
+                    throw new ArgumentException("Suit and Rank cannot be empty.");
+                }
+            }
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
             }
         }
 
-        // Deals a specific number of cards from the standard deck
         private void DealButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Get the number of cards to draw from DrawTextBox
                 if (int.TryParse(DrawTextBox.Text, out int drawCount) && drawCount > 0)
                 {
                     DealtCardsListBox.Items.Clear();
+                    string dealtCardsStr = "";
                     for (int i = 0; i < drawCount; i++)
                     {
                         var dealtCard = standardDeck.Deal();
                         DealtCardsListBox.Items.Add(dealtCard.ToString());
+                        dealtCardsStr += dealtCard.ToString() + ", ";
                     }
+
+                    LogOperation("Deal", $"Dealt {drawCount} cards: {dealtCardsStr.TrimEnd(',', ' ')}");
                 }
                 else
                 {
@@ -64,7 +73,6 @@ namespace DeckBuilder
             }
             catch (InvalidOperationException ex)
             {
-                // Show an error if there’s an issue with dealing cards
                 MessageBox.Show(ex.Message);
             }
             catch (Exception ex)
@@ -73,42 +81,96 @@ namespace DeckBuilder
             }
         }
 
-        // Shows the current deck in the DeckListView
         private void ViewDeckButton_Click(object sender, RoutedEventArgs e)
         {
             DisplayDeck();
         }
 
-        // Shuffles the deck and updates the display to show the new order
         private void ShuffleButton_Click(object sender, RoutedEventArgs e)
         {
             standardDeck.Shuffle();
             DisplayDeck();
+            LogOperation("Shuffle", "Deck shuffled");
         }
 
-        // Resets the deck to its original state
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             standardDeck = new StandardDeck();
             DeckListView.Items.Clear();
+            LogOperation("Reset", "Deck reset to original state");
         }
 
-        // Closes the application
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            LogOperation("Exit", "Application exited");
             Application.Current.Shutdown();
         }
 
-        // Displays all cards in the deck in DeckListView
         private void DisplayDeck()
         {
             DeckListView.Items.Clear();
-
-            var cardList = standardDeck.Cards.ToList();
-            for (int i = 0; i < cardList.Count; i++)
+            foreach (var card in standardDeck.Cards)
             {
-                DeckListView.Items.Add(cardList[i].ToString());
+                DeckListView.Items.Add(card.ToString());
             }
         }
+
+        private void LoadDeckFromJson()
+        {
+            string filePath = "deck.json";
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                standardDeck = JsonConvert.DeserializeObject<StandardDeck>(json) ?? new StandardDeck();
+            }
+            else
+            {
+                standardDeck = new StandardDeck();
+            }
+        }
+
+        private void SaveDeckToJson()
+        {
+            string filePath = "deck.json";
+            string json = JsonConvert.SerializeObject(standardDeck, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(filePath, json);
+        }
+
+        private void LogOperation(string operation, string details)
+        {
+            string filePath = "operations_log.json";
+            try
+            {
+                var logs = File.Exists(filePath)
+                    ? JsonConvert.DeserializeObject<List<LogEntry>>(File.ReadAllText(filePath)) ?? new List<LogEntry>()
+                    : new List<LogEntry>();
+
+                logs.Add(new LogEntry
+                {
+                    Timestamp = DateTime.Now,
+                    Operation = operation,
+                    Details = details
+                });
+
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(logs, Newtonsoft.Json.Formatting.Indented));
+            }
+            catch
+            {
+                // Handle logging failures silently
+            }
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            SaveDeckToJson();
+        }
+    }
+
+    public class LogEntry
+    {
+        public DateTime Timestamp { get; set; }
+        public string Operation { get; set; }
+        public string Details { get; set; }
     }
 }
