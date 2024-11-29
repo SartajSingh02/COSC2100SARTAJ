@@ -88,7 +88,19 @@
 					</Button.InputBindings>
 				</Button>
 
+				<!-- Joker Card Input -->
+				<StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+					<TextBlock Text="Joker Color:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<TextBox Name="JokerColorTextBox" Width="100" ToolTip="Enter the color for a Joker card" />
+				</StackPanel>
+				<Button Content="Add Joker" Click="AddJokerButton_Click" Width="150" Margin="0,0,0,10" />
 
+				<!-- Wild Card Input -->
+				<StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+					<TextBlock Text="Wild Card:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<TextBox Name="WildAbilityTextBox" Width="100" ToolTip="Enter the special ability for a Wild card" />
+				</StackPanel>
+				<Button Content="Add Wild Card" Click="AddWildCardButton_Click" Width="150" Margin="0,0,0,10" />
 			</StackPanel>
         </Grid>
     </DockPanel>

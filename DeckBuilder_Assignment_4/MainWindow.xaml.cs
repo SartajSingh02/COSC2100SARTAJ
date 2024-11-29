@@ -196,5 +196,71 @@ namespace DeckBuilder
             MessageBox.Show("Deck reset to its original state.", "Reset", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+
+        public class JokerCard : Card
+        {
+            public string Color { get; set; }
+
+            public JokerCard(string color) : base("None", "Joker")
+            {
+                Color = color;
+            }
+
+            public override string ToString()
+            {
+                return $"{Color} Joker";
+            }
+        }
+
+        public class WildCard : Card
+        {
+            public string SpecialAbility { get; set; }
+
+            public WildCard(string specialAbility) : base("None", "Wild")
+            {
+                SpecialAbility = specialAbility;
+            }
+
+            public override string ToString()
+            {
+                return $"Wild Card with Ability: {SpecialAbility}";
+            }
+        }
+
+        private void AddJokerButton_Click(object sender, RoutedEventArgs e)
+        {
+            string color = JokerColorTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(color))
+            {
+                MessageBox.Show("Joker color cannot be empty.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            standardDeck.AddCard(new JokerCard(color));
+            JokerColorTextBox.Clear();
+            ViewDeckButton_Click(null, null);
+            MessageBox.Show("Joker card added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void AddWildCardButton_Click(object sender, RoutedEventArgs e)
+        {
+            string ability = WildAbilityTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(ability))
+            {
+                MessageBox.Show("Wild card ability cannot be empty.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            standardDeck.AddCard(new WildCard(ability));
+            WildAbilityTextBox.Clear();
+            ViewDeckButton_Click(null, null);
+            MessageBox.Show("Wild card added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        
+
+
     }
 }

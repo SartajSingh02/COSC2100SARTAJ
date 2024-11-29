@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DeckBuilder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39038577088e5b8eb0ded2c848bac7b192d716ae")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+467ae846ed7bdca63c37099360d57dce5cb88097")]
 [assembly: System.Reflection.AssemblyProductAttribute("DeckBuilder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DeckBuilder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
