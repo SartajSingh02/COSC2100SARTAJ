@@ -4,15 +4,15 @@
 winexe
 C#
 .cs
-C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_3\obj\Debug\net8.0-windows\
+C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_3\obj\Release\net8.0-windows\
 DeckBuilder
 none
 false
-TRACE;DEBUG;NET;NET8_0;NETCOREAPP
+TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_3\App.xaml
 11407045341
 
-8-1763374025
+81608225130
 198-1431420039
 MainWindow.xaml;
 

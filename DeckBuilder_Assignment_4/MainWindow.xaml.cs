@@ -1,9 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Windows;
-using System.Xml;
-using Newtonsoft.Json;
 
 namespace DeckBuilder
 {
@@ -14,100 +10,86 @@ namespace DeckBuilder
         public MainWindow()
         {
             InitializeComponent();
-            try
-            {
-                LoadDeckFromJson();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Could not load deck from file. Starting with a new deck.\n" + ex.Message);
-                standardDeck = new StandardDeck();
-            }
+            standardDeck = new StandardDeck(); // Initialize with a standard deck
         }
 
         private void AddCustomButton_Click(object sender, RoutedEventArgs e)
         {
-            string suit = SuitTextBox.Text;
-            string rank = RankTextBox.Text;
-            try
+            string suit = SuitTextBox.Text.Trim();
+            string rank = RankTextBox.Text.Trim();
+
+            // Validate Suit
+            if (string.IsNullOrWhiteSpace(suit))
             {
-                if (!string.IsNullOrWhiteSpace(suit) && !string.IsNullOrWhiteSpace(rank))
-                {
-                    standardDeck.AddCard(new Card(suit, rank));
-                    MessageBox.Show($"Added Custom Card: {rank} of {suit}");
-                    LogOperation("AddCustomCard", $"Added Custom Card: {rank} of {suit}");
-                    DisplayDeck();
-                }
-                else
-                {
-                    throw new ArgumentException("Suit and Rank cannot be empty.");
-                }
+                MessageBox.Show("Suit cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            catch (Exception ex)
+
+            // Validate Rank
+            if (string.IsNullOrWhiteSpace(rank))
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Rank cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            // Add the card to the deck
+            standardDeck.AddCard(new Card(suit, rank));
+
+            // Clear input fields
+            SuitTextBox.Clear();
+            RankTextBox.Clear();
+
+            // Display success message
+            MessageBox.Show("Custom card added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // Refresh deck display
+            ViewDeckButton_Click(null, null);
         }
+
 
         private void DealButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (!int.TryParse(DrawTextBox.Text, out int count) || count <= 0)
             {
-                if (int.TryParse(DrawTextBox.Text, out int drawCount) && drawCount > 0)
-                {
-                    DealtCardsListBox.Items.Clear();
-                    string dealtCardsStr = "";
-                    for (int i = 0; i < drawCount; i++)
-                    {
-                        var dealtCard = standardDeck.Deal();
-                        DealtCardsListBox.Items.Add(dealtCard.ToString());
-                        dealtCardsStr += dealtCard.ToString() + ", ";
-                    }
+                MessageBox.Show("Please enter a valid positive number for cards to draw.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-                    LogOperation("Deal", $"Dealt {drawCount} cards: {dealtCardsStr.TrimEnd(',', ' ')}");
-                }
-                else
-                {
-                    MessageBox.Show("Please enter a valid positive number for the draw count.");
-                }
-            }
-            catch (InvalidOperationException ex)
+            if (count > standardDeck.Cards.Count)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Not enough cards in the deck to draw the specified number.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            catch (Exception ex)
+
+            DealtCardsListBox.Items.Clear();
+
+            for (int i = 0; i < count; i++)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                var card = standardDeck.Deal();
+                DealtCardsListBox.Items.Add(card.ToString());
             }
+
+            // Refresh the deck display
+            ViewDeckButton_Click(null, null);
+
+            MessageBox.Show($"{count} card(s) dealt successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void ViewDeckButton_Click(object sender, RoutedEventArgs e)
-        {
-            DisplayDeck();
-        }
 
         private void ShuffleButton_Click(object sender, RoutedEventArgs e)
         {
             standardDeck.Shuffle();
-            DisplayDeck();
-            LogOperation("Shuffle", "Deck shuffled");
+
+            // Refresh the deck display
+            ViewDeckButton_Click(null, null);
+
+            MessageBox.Show("Deck shuffled successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            standardDeck = new StandardDeck();
-            DeckListView.Items.Clear();
-            LogOperation("Reset", "Deck reset to original state");
-        }
-
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            LogOperation("Exit", "Application exited");
-            Application.Current.Shutdown();
-        }
-
-        private void DisplayDeck()
-        {
+            standardDeck.ResetDeck(); // Reset the deck to its original state
             DeckListView.Items.Clear();
             foreach (var card in standardDeck.Cards)
             {
@@ -115,62 +97,118 @@ namespace DeckBuilder
             }
         }
 
-        private void LoadDeckFromJson()
+        private void ViewDeckButton_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = "deck.json";
-            if (File.Exists(filePath))
+            DeckListView.Items.Clear();
+
+            foreach (var card in standardDeck.Cards)
             {
-                string json = File.ReadAllText(filePath);
-                standardDeck = JsonConvert.DeserializeObject<StandardDeck>(json) ?? new StandardDeck();
-            }
-            else
-            {
-                standardDeck = new StandardDeck();
+                DeckListView.Items.Add(card.ToString());
             }
         }
 
-        private void SaveDeckToJson()
+
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = "deck.json";
-            string json = JsonConvert.SerializeObject(standardDeck, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(filePath, json);
+            // Confirm exit and reset action
+            MessageBoxResult result = MessageBox.Show(
+                "Do you want to reset unsaved changes before exiting?",
+                "Exit Confirmation",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // Reset the deck before exiting
+                standardDeck.ResetDeck();
+                Application.Current.Shutdown();
+            }
+            else if (result == MessageBoxResult.No)
+            {
+                // Exit without resetting
+                Application.Current.Shutdown();
+            }
+            // Cancel does nothing
         }
 
-        private void LogOperation(string operation, string details)
+
+        private void SaveDeckMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = "operations_log.json";
             try
             {
-                var logs = File.Exists(filePath)
-                    ? JsonConvert.DeserializeObject<List<LogEntry>>(File.ReadAllText(filePath)) ?? new List<LogEntry>()
-                    : new List<LogEntry>();
-
-                logs.Add(new LogEntry
-                {
-                    Timestamp = DateTime.Now,
-                    Operation = operation,
-                    Details = details
-                });
-
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(logs, Newtonsoft.Json.Formatting.Indented));
+                string filePath = "deck.json";
+                standardDeck.SaveToJson(filePath);
+                MessageBox.Show("Deck saved successfully to JSON.");
             }
-            catch
+            catch (Exception ex)
             {
-                // Handle logging failures silently
+                MessageBox.Show($"Error saving deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            SaveDeckToJson();
-        }
-    }
 
-    public class LogEntry
-    {
-        public DateTime Timestamp { get; set; }
-        public string Operation { get; set; }
-        public string Details { get; set; }
+        private void LoadDeckMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filePath = "deck.json";
+                standardDeck.LoadFromJson(filePath);
+                MessageBox.Show("Deck loaded successfully from JSON.");
+                ViewDeckButton_Click(null, null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportToXmlMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filePath = "deck.xml";
+                standardDeck.SaveToXml(filePath);
+                MessageBox.Show("Deck exported successfully to XML.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error exporting deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportToJsonMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filePath = "deck.json";
+                standardDeck.SaveToJson(filePath);
+                MessageBox.Show("Deck exported successfully to JSON.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error exporting deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ClearAllMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            standardDeck.ClearDeck();
+            DeckListView.Items.Clear();
+            DealtCardsListBox.Items.Clear();
+            MessageBox.Show("All cards cleared from the deck.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void HelpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("This application allows you to build, shuffle, and manage a deck of cards.", "Help", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DeckBuilder Application\nVersion 1.0\nCreated by Sartaj Singh", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
     }
 }

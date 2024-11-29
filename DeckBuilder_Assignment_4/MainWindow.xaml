@@ -1,41 +1,95 @@
 ﻿<Window x:Class="DeckBuilder.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Deck Builder" Height="400" Width="600">
-    <Grid Margin="10">
-        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Width="180">
-            <TextBlock Text="Card" FontWeight="Bold" Margin="0,0,0,5"/>
-            <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
-                <TextBlock Text="Suit:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBox Name="SuitTextBox" Width="100" ToolTip="Enter the suit for a custom card"/>
+        Title="Deck Builder"
+        Height="500" Width="700"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel>
+        <!-- Menu Bar -->
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="_File">
+				<MenuItem Header="Save Deck" Click="SaveDeckMenuItem_Click" />
+				<MenuItem Header="Load Deck" Click="LoadDeckMenuItem_Click" />
+				<MenuItem Header="Export to XML" Click="ExportToXmlMenuItem_Click" />
+				<MenuItem Header="Export to JSON" Click="ExportToJsonMenuItem_Click" />
+			</MenuItem>
+			<MenuItem Header="_Edit">
+				<MenuItem Header="Clear All" Click="ClearAllMenuItem_Click" />
+			</MenuItem>
+			<MenuItem Header="_Help">
+				<MenuItem Header="Help" Click="HelpMenuItem_Click" />
+				<MenuItem Header="About" Click="AboutMenuItem_Click" />
+			</MenuItem>
+		</Menu>
+
+
+		<!-- Main Content Grid -->
+        <Grid Margin="10">
+            <!-- Left Section for Card Input -->
+			<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Width="200">
+				<TextBlock Text="Add Custom Card" FontWeight="Bold" Margin="0,0,0,5" />
+				<StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+					<TextBlock Text="Suit:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<TextBox Name="SuitTextBox" Width="100" ToolTip="Enter the suit for a custom card" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+					<TextBlock Text="Rank:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<TextBox Name="RankTextBox" Width="100" ToolTip="Enter the rank for a custom card" />
+				</StackPanel>
+				<Button Content="Add Custom Card" Click="AddCustomButton_Click" Width="150" Margin="0,0,0,10" />
+
+                <TextBlock Text="Deal Cards" FontWeight="Bold" Margin="0,10,0,5" />
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+					<TextBlock Text="Draw:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<TextBox Name="DrawTextBox" Width="50" Margin="0,0,5,0" ToolTip="Enter the number of cards to draw" />
+					<Button Content="Deal" Click="DealButton_Click" Width="50" />
+				</StackPanel>
+				<TextBlock Text="Cards Dealt" FontWeight="Bold" Margin="0,10,0,5" />
+				<ListBox Name="DealtCardsListBox" Width="150" Height="100" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
-                <TextBlock Text="Rank:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBox Name="RankTextBox" Width="100" ToolTip="Enter the rank for a custom card"/>
-            </StackPanel>
-            <Button Content="Add Custom" Click="AddCustomButton_Click" Width="150" Margin="0,0,0,10"/>
-            <Grid Margin="0,10,0,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Draw:" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBox Name="DrawTextBox" Grid.Column="1" Width="50" Margin="0,0,5,0"/>
-                <Button Content="_Deal" Click="DealButton_Click" Grid.Column="2" Width="50"/>
-            </Grid>
-            <TextBlock Text="Cards Dealt" FontWeight="Bold" Margin="0,10,0,5"/>
-            <ListBox Name="DealtCardsListBox" Width="150" Height="100"/>
-        </StackPanel>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Width="200">
-            <TextBlock Text="Deck" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-            <ListBox Name="DeckListView" Width="180" Height="250" HorizontalAlignment="Center"/>
-        </StackPanel>
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,17,40,0">
-            <Button Content="View _Deck" Click="ViewDeckButton_Click" Width="80" Margin="0,0,0,10"/>
-            <Button Content="_Shuffle" Click="ShuffleButton_Click" Width="80" Margin="0,0,0,10"/>
-            <Button Content="_Reset" Click="ResetButton_Click" Width="80" Margin="0,0,0,10"/>
-            <Button Content="E_xit" Click="ExitButton_Click" Width="80" Margin="0,0,0,10"/>
-        </StackPanel>
-    </Grid>
+
+            <!-- Middle Section for Deck Display -->
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Width="200">
+				<TextBlock Text="Deck" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,5" />
+				<ListBox Name="DeckListView" Width="180" Height="250" HorizontalAlignment="Center" ToolTip="Displays the current deck of cards">
+					<ListBox.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Save Deck" Click="SaveDeckMenuItem_Click" />
+							<MenuItem Header="Load Deck" Click="LoadDeckMenuItem_Click" />
+							<MenuItem Header="Clear All" Click="ClearAllMenuItem_Click" />
+						</ContextMenu>
+					</ListBox.ContextMenu>
+				</ListBox>
+			</StackPanel>
+
+
+			<!-- Right Section for Control Buttons -->
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Width="200">
+                <TextBlock Text="Deck Controls" FontWeight="Bold" Margin="0,10,0,5" />
+                <Button Content="_View Deck" Click="ViewDeckButton_Click" Width="150" Margin="0,0,0,10" />
+				<Button Content="_Shuffle" Click="ShuffleButton_Click" Width="150" Margin="0,0,0,10" ToolTip="Shuffles the deck and displays the new order" />
+				<Button Content="_Reset" 
+                        Click="ResetButton_Click" 
+                        Width="150" 
+                        Margin="0,0,0,10" 
+                        ToolTip="Resets the deck to its original state" 
+                        IsDefault="True">
+                    <Button.InputBindings>
+                        <KeyBinding Key="Escape" Command="{Binding ResetCommand}" />
+                    </Button.InputBindings>
+                </Button>
+				<Button Content="E_xit"
+                        Click="ExitButton_Click"
+                        Width="150"
+                        Margin="0,0,0,10"
+                        ToolTip="Closes the application and optionally resets unsaved changes">
+					<Button.InputBindings>
+						<KeyBinding Key="Escape" Command="{Binding ExitCommand}" />
+					</Button.InputBindings>
+				</Button>
+
+
+			</StackPanel>
+        </Grid>
+    </DockPanel>
 </Window>

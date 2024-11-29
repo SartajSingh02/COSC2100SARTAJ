@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class StandardDeck : Deck
 {
     private readonly string[] suits = { "Hearts", "Diamonds", "Clubs", "Spades" };
@@ -5,6 +7,17 @@ public class StandardDeck : Deck
 
     public StandardDeck()
     {
+        ResetDeck();
+    }
+
+    public void ClearDeck()
+    {
+        cards.Clear(); // Remove all cards from the deck
+    }
+
+    public void ResetDeck()
+    {
+        cards.Clear();
         foreach (var suit in suits)
         {
             foreach (var rank in ranks)

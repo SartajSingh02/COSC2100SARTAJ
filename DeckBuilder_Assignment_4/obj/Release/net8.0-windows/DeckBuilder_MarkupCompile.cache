@@ -1,18 +1,18 @@
 ﻿DeckBuilder
-1.0.0.0
+
 
 winexe
 C#
 .cs
-C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_4\obj\Debug\net8.0-windows\
+C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_4\obj\Release\net8.0-windows\
 DeckBuilder
 none
 false
-TRACE;DEBUG;NET;NET8_0;NETCOREAPP
+TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 C:\Users\HP\OneDrive - Durham College\Desktop\github_C#_Uploads\DeckBuilder_Assignment_4\App.xaml
 11407045341
 
-15-830400141
+9-2050903919
 199-598269392
 MainWindow.xaml;
 
