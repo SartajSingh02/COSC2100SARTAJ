@@ -1,51 +1,36 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DeckBuilder
 {
     public partial class MainWindow : Window
     {
         private StandardDeck standardDeck;
+        private PersistenceManager persistenceManager;
 
         public MainWindow()
         {
             InitializeComponent();
-            standardDeck = new StandardDeck(); // Initialize with a standard deck
+            standardDeck = new StandardDeck();
+            persistenceManager = new PersistenceManager(new JsonDeckPersistence());
         }
 
-        private void AddCustomButton_Click(object sender, RoutedEventArgs e)
+        private void ViewDeckButton_Click(object sender, RoutedEventArgs e)
         {
-            string suit = SuitTextBox.Text.Trim();
-            string rank = RankTextBox.Text.Trim();
-
-            // Validate Suit
-            if (string.IsNullOrWhiteSpace(suit))
+            DeckListView.Items.Clear();
+            foreach (var card in standardDeck.Cards)
             {
-                MessageBox.Show("Suit cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                DeckListView.Items.Add(card.ToString());
             }
-
-            // Validate Rank
-            if (string.IsNullOrWhiteSpace(rank))
-            {
-                MessageBox.Show("Rank cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            // Add the card to the deck
-            standardDeck.AddCard(new Card(suit, rank));
-
-            // Clear input fields
-            SuitTextBox.Clear();
-            RankTextBox.Clear();
-
-            // Display success message
-            MessageBox.Show("Custom card added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // Refresh deck display
-            ViewDeckButton_Click(null, null);
         }
 
+        private void ShuffleButton_Click(object sender, RoutedEventArgs e)
+        {
+            standardDeck.Shuffle();
+            ViewDeckButton_Click(null, null);
+            MessageBox.Show("Deck shuffled successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
         private void DealButton_Click(object sender, RoutedEventArgs e)
         {
@@ -62,85 +47,23 @@ namespace DeckBuilder
             }
 
             DealtCardsListBox.Items.Clear();
-
             for (int i = 0; i < count; i++)
             {
                 var card = standardDeck.Deal();
                 DealtCardsListBox.Items.Add(card.ToString());
             }
 
-            // Refresh the deck display
             ViewDeckButton_Click(null, null);
-
             MessageBox.Show($"{count} card(s) dealt successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-
-
-        private void ShuffleButton_Click(object sender, RoutedEventArgs e)
-        {
-            standardDeck.Shuffle();
-
-            // Refresh the deck display
-            ViewDeckButton_Click(null, null);
-
-            MessageBox.Show("Deck shuffled successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            standardDeck.ResetDeck(); // Reset the deck to its original state
-            DeckListView.Items.Clear();
-            foreach (var card in standardDeck.Cards)
-            {
-                DeckListView.Items.Add(card.ToString());
-            }
-        }
-
-        private void ViewDeckButton_Click(object sender, RoutedEventArgs e)
-        {
-            DeckListView.Items.Clear();
-
-            foreach (var card in standardDeck.Cards)
-            {
-                DeckListView.Items.Add(card.ToString());
-            }
-        }
-
-
-
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Confirm exit and reset action
-            MessageBoxResult result = MessageBox.Show(
-                "Do you want to reset unsaved changes before exiting?",
-                "Exit Confirmation",
-                MessageBoxButton.YesNoCancel,
-                MessageBoxImage.Question
-            );
-
-            if (result == MessageBoxResult.Yes)
-            {
-                // Reset the deck before exiting
-                standardDeck.ResetDeck();
-                Application.Current.Shutdown();
-            }
-            else if (result == MessageBoxResult.No)
-            {
-                // Exit without resetting
-                Application.Current.Shutdown();
-            }
-            // Cancel does nothing
-        }
-
 
         private void SaveDeckMenuItem_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string filePath = "deck.json";
-                standardDeck.SaveToJson(filePath);
-                MessageBox.Show("Deck saved successfully to JSON.");
+                string filePath = persistenceManager is XmlDeckPersistence ? "deck.xml" : "deck.json";
+                persistenceManager.SaveDeck(standardDeck, filePath);
+                MessageBox.Show($"Deck saved successfully to {filePath}.");
             }
             catch (Exception ex)
             {
@@ -148,14 +71,13 @@ namespace DeckBuilder
             }
         }
 
-
         private void LoadDeckMenuItem_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string filePath = "deck.json";
-                standardDeck.LoadFromJson(filePath);
-                MessageBox.Show("Deck loaded successfully from JSON.");
+                string filePath = persistenceManager is XmlDeckPersistence ? "deck.xml" : "deck.json";
+                standardDeck = (StandardDeck)persistenceManager.LoadDeck(filePath);
+                MessageBox.Show($"Deck loaded successfully from {filePath}.");
                 ViewDeckButton_Click(null, null);
             }
             catch (Exception ex)
@@ -164,32 +86,16 @@ namespace DeckBuilder
             }
         }
 
-        private void ExportToXmlMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SwitchToXml_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string filePath = "deck.xml";
-                standardDeck.SaveToXml(filePath);
-                MessageBox.Show("Deck exported successfully to XML.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error exporting deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            persistenceManager.SetPersistence(new XmlDeckPersistence());
+            MessageBox.Show("Switched to XML persistence.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void ExportToJsonMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SwitchToJson_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string filePath = "deck.json";
-                standardDeck.SaveToJson(filePath);
-                MessageBox.Show("Deck exported successfully to JSON.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error exporting deck: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            persistenceManager.SetPersistence(new JsonDeckPersistence());
+            MessageBox.Show("Switched to JSON persistence.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void ClearAllMenuItem_Click(object sender, RoutedEventArgs e)
@@ -207,7 +113,87 @@ namespace DeckBuilder
 
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("DeckBuilder Application\nVersion 1.0\nCreated by Sartaj Singh", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("DeckBuilder Application Version 1.0 Created by Sartaj Singh", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Do you want to reset unsaved changes before exiting?",
+                "Exit Confirmation",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                standardDeck.ResetDeck();
+                Application.Current.Shutdown();
+            }
+            else if (result == MessageBoxResult.No)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void ExportToJsonMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filePath = "deck.json";
+                persistenceManager.SaveDeck(standardDeck, filePath);
+                MessageBox.Show("Deck exported successfully to JSON.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error exporting deck to JSON: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportToXmlMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string filePath = "deck.xml";
+                persistenceManager.SaveDeck(standardDeck, filePath);
+                MessageBox.Show("Deck exported successfully to XML.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error exporting deck to XML: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AddCustomButton_Click(object sender, RoutedEventArgs e)
+        {
+            string suit = SuitTextBox.Text.Trim();
+            string rank = RankTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(suit))
+            {
+                MessageBox.Show("Suit cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(rank))
+            {
+                MessageBox.Show("Rank cannot be empty or only spaces.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            standardDeck.AddCard(new Card(suit, rank));
+            SuitTextBox.Clear();
+            RankTextBox.Clear();
+            ViewDeckButton_Click(null, null);
+            MessageBox.Show("Custom card added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            standardDeck.ResetDeck();
+            DeckListView.Items.Clear();
+            ViewDeckButton_Click(null, null);
+            MessageBox.Show("Deck reset to its original state.", "Reset", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
     }
